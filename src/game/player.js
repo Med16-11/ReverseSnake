@@ -24,11 +24,21 @@ export function resetPlayer(canvas){
 
 export function updatePlayer(dt, canvas){
   let dx = 0, dy = 0;
+
+  // keyboard input (existing)
   if (keys['w'] || keys['arrowup']) dy = -1;
   if (keys['s'] || keys['arrowdown']) dy = 1;
   if (keys['a'] || keys['arrowleft']) dx = -1;
   if (keys['d'] || keys['arrowright']) dx = 1;
 
+  // touch input (press-and-hold from on-screen D-pad)
+  const ti = (window.touchInput || {});
+  if (ti.up) dy = -1;
+  if (ti.down) dy = 1;
+  if (ti.left) dx = -1;
+  if (ti.right) dx = 1;
+
+  // if both keyboard and touch pressed, combine naturally
   const len = Math.hypot(dx, dy);
   if (len > 0) {
     dx /= len; dy /= len;
@@ -45,3 +55,4 @@ export function updatePlayer(dt, canvas){
   player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
   player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
 }
+

@@ -68,3 +68,54 @@ canvas{width:100%;height:100%;display:block;}
 /* utility classes */
 .hidden{display:none}
 .level-popup.hidden{display:none}
+
+/* Mobile-friendly touch controls - big & visible */
+.touch-controls{
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display:flex;
+  gap:12px;
+  align-items:end;
+  z-index:9999;
+  pointer-events:auto;
+  user-select:none;
+}
+
+.dpad { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.dpad-row { display:flex; gap:8px; }
+.dpad-btn {
+  width:64px;
+  height:64px;
+  border-radius:12px;
+  border:0;
+  font-size:22px;
+  background:linear-gradient(180deg,#0e2b36,#072027);
+  color:#fff;
+  box-shadow:0 10px 30px rgba(2,6,23,0.6);
+  touch-action:none;
+}
+.tele-quick button#bigTeleport{
+  width:96px;
+  height:96px;
+  border-radius:18px;
+  border:0;
+  font-size:18px;
+  background:linear-gradient(90deg,var(--accent),#ffb86b);
+  color:#07101a;
+  box-shadow:0 14px 40px rgba(239,71,111,0.12);
+  touch-action:none;
+}
+
+/* smaller screens: center horizontally & slightly bigger */
+@media (max-width:720px){
+  .touch-controls{ right:12px; bottom:12px; gap:10px; }
+  .dpad-btn { width:72px; height:72px; font-size:24px; }
+  .tele-quick button#bigTeleport { width:100px; height:100px; font-size:18px; }
+}
+
+/* optional: hide left panel on very small phones to give canvas more space */
+@media (max-width:640px){
+  .panel{ display:none; }
+  .game-wrap{ flex:1; }
+}

@@ -1,4 +1,6 @@
 import { startGame, teleport, togglePause, getShareLinkFromState, loadSharedDataIfPresent } from './game/engine.js';
+import './style.css';
+
 
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
@@ -82,3 +84,41 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(()=>{/*sw reg failed*/});
   });
 }
+
+// --- Mobile touch mapping with press-and-hold ---
+// Put this at the bottom of src/main.js (after import/start wiring)
+
+window.touchInput = {
+  up: false,
+  down: false,
+  left: false,
+  right: false
+};
+
+function setTouch(key, val){
+  if(!window.touchInput) return;
+  window.touchInput[key] = !!val;
+}
+
+// Utility: attach pointer handlers to a button element to set/unset the touchInput key
+function wireDpadButton(elId, keyName){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.addEventListener('pointerdown', e => { e.preventDefault(); setTouch(keyName, true); });
+  el.addEventListener('pointerup',   e => { e.preventDefault(); setTouch(keyName, false); });
+  el.addEventListener('pointercancel', e => { setTouch(keyName, false); });
+  el.addEventListener('pointerleave', e => { setTouch(keyName, false); });
+  // support touch hold when moving finger off button (optional)
+  el.addEventListener('lostpointercapture', e => { setTouch(keyName, false); });
+}
+
+// wire the dpad buttons (IDs from index.html: btnUp, btnLeft, btnDown, btnRight)
+wireDpadButton('btnUp', 'up');
+wireDpadButton('btnLeft', 'left');
+wireDpadButton('btnDown', 'down');
+wireDpadButton('btnRight', 'right');
+
+// ensure touch input toggles when window loses focus (safety)
+window.addEventListener('blur', ()=> {
+  setTouch('up',false); setTouch('down',false); setTouch('left',false); setTouch('right',false);
+});
